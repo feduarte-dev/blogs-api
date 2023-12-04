@@ -3,7 +3,7 @@ const { userService } = require('../services');
 
 const secret = process.env.JWT_SECRET;
 
-module.exports = async (req, res) => {
+const createUser = async (req, res) => {
   try {
     const { displayName, email, password, image } = req.body;
 
@@ -21,4 +21,19 @@ module.exports = async (req, res) => {
     console.log(error);
     return res.status(500).json({ message: 'Internal Error' });
   }
+};
+
+const getUsers = async (req, res) => {
+  try {
+    const users = await userService.getUsers();
+    return res.status(200).json(users);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: 'Internal Error' });
+  }
+};
+
+module.exports = {
+  createUser,
+  getUsers,
 };

@@ -2,10 +2,7 @@ const { loginService } = require('../services');
 
 const validateDisplayName = (displayName) => (!displayName || displayName.length < 8);
 const validatePassword = (password) => (!password || password.length < 6);
-const validateEmail = (email) => {
-  const EMAIL_REGEX = /[a-z0-9]+@[a-z]+.[a-z]{2,3}/;
-  return email.match(EMAIL_REGEX);
-};
+const validateEmail = (email) => email.match(/[a-z0-9]+@[a-z]+.[a-z]{2,3}/);
 
 const validateUser = async (req, res, next) => {
   const { displayName, email, password } = req.body;
