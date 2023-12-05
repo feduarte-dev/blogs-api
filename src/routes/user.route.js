@@ -4,6 +4,7 @@ const { userController } = require('../controllers');
 const validateUser = require('../middlewares/validateUser');
 const validateToken = require('../middlewares/validateToken');
 
+route.delete('/me', validateToken, userController.deleteUser);
 route.get('/:id', validateToken, userController.getUserById);
 route.get('/', validateToken, userController.getUsers);
 route.post('/', validateUser, userController.createUser);
