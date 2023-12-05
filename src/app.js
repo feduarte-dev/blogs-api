@@ -25,7 +25,7 @@ module.exports = app;
 // pq na criacao da model, ao colocar os parametros sequelize e datatypes, o vscode importa desnecessariamente eles?
 // fiz uma validacao puxando a service, devo trocar o lugar da validacao pra nao puxa-la?
 // o map de post service é valido?
-
+// fiz validacoes no controller, ta errado/
 // nao entendi a aplicabilidade de: const teste = (categories) => Category.findAndCountAll({
 //   where: { id: categories },
 //   offset: 0,
