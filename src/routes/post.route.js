@@ -4,6 +4,7 @@ const validateToken = require('../middlewares/validateToken');
 const validateUpdate = require('../middlewares/validateUpdates');
 const { postController, post2Controller } = require('../controllers');
 
+route.delete('/:id', validateToken, post2Controller.deletePost);
 route.put('/:id', validateToken, validateUpdate, postController.updatePost);
 route.get('/:id', validateToken, post2Controller.getPostById);
 route.post('/', validateToken, validatePost, postController.addPost);
