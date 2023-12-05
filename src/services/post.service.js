@@ -29,20 +29,21 @@ const addPost = async (title, content, categoryIds, userId) => {
 
 const getPosts = () => BlogPost.findAll({
   include: [
-    {
-      model: User,
-      as: 'user',
-      attributes: { exclude: ['password'] },
-    },
-    {
-      model: Category,
-      as: 'categories',
-      through: { attributes: [] },
-    },
+    { model: User, as: 'user', attributes: { exclude: ['password'] } },
+    { model: Category, as: 'categories', through: { attributes: [] } },
+  ],
+});
+
+const getPostById = (id) => BlogPost.findOne({
+  where: { id }, 
+  include: [
+    { model: User, as: 'user', attributes: { exclude: ['password'] } },
+    { model: Category, as: 'categories', through: { attributes: [] } },
   ],
 });
 
 module.exports = {
   addPost,
   getPosts,
+  getPostById,
 };
