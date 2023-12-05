@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const { loginService } = require('../services');
 
 const secret = process.env.JWT_SECRET;
 
@@ -11,8 +12,8 @@ module.exports = async (req, res) => {
       algorithm: 'HS256',
     };
 
-    const token = jwt.sign({ data: { email } }, secret, jwtConfig);
-
+    const user = await loginService.getByEmail(email);
+    const token = jwt.sign({ data: { email, userId: user.dataValues.id } }, secret, jwtConfig);
     return res.status(200).json({ token });
   } catch (error) {
     console.log(error);

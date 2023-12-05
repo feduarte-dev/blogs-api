@@ -11,7 +11,7 @@ const validateLogin = async (req, res, next) => {
   if (!user || user.password !== password) {
     return res.status(400).json({ message: 'Invalid fields' });
   }
-  
+
   next();
 };
 
