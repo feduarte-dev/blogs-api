@@ -1,34 +1,22 @@
-const jwt = require('jsonwebtoken');
 const { postService } = require('../services');
-
-const getUserId = async (authorization) => {
-  const token = authorization.split(' ')[1];
-  const secret = process.env.JWT_SECRET;
-  const decoded = jwt.verify(token, secret);
-  return decoded.data.userId;
-};
+const getUserFromToken = require('../utils/getUserFromToken');
 
 const getPosts = async (req, res) => {
   try {
     const posts = await postService.getPosts();
     return res.status(200).json(posts);
   } catch (error) {
-    console.log(error);
-    return res.status(500).json({ message: 'Internal Error' });
+    return res.status(500).json({ message: error.message });
   }
 };
   
 const getPostById = async (req, res) => {
   try {
     const { id } = req.params;
-    const post = await postService.getPostById(id);
-    if (!post) {
-      return res.status(404).json({ message: 'Post does not exist' });
-    }
-    return res.status(200).json(post);
+    const { status, data } = await postService.getPostById(id);
+    return res.status(status).json(data);
   } catch (error) {
-    console.log(error);
-    return res.status(500).json({ message: 'Internal Error' });
+    return res.status(500).json({ message: error.message });
   }
 };
 
@@ -36,21 +24,11 @@ const deletePost = async (req, res) => {
   try {
     const { id } = req.params;
     const { authorization } = req.headers;
-    const userId = await getUserId(authorization);
-    const post = await postService.getPostById(id);
-   
-    if (!post) {
-      return res.status(404).json({ message: 'Post does not exist' });
-    }
-    if (userId !== post.user.id) {
-      return res.status(401).json({ message: 'Unauthorized user' });
-    }
-    await postService.deletePost(id);
-  
-    return res.status(204).end();
+    const { userId } = await getUserFromToken(authorization);
+    const { status, data } = await postService.deletePost(id, userId);
+    return res.status(status).json(data);
   } catch (error) {
-    console.log(error);
-    return res.status(500).json({ message: 'Internal Error' });
+    return res.status(500).json({ message: error.message });
   }
 };
 module.exports = {

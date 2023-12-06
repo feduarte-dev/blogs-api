@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 const Sequelize = require('sequelize');
 const { BlogPost, PostCategory, User, Category } = require('../models');
 const config = require('../config/config');
@@ -20,7 +21,7 @@ const addPost = async (title, content, categoryIds, userId) => {
     await Promise.all(addPostCategory);
     return newPost;
   });
-  return result;
+  return { status: 201, data: result };
 };
 
 const getPosts = () => BlogPost.findAll({
@@ -30,17 +31,42 @@ const getPosts = () => BlogPost.findAll({
   ],
 });
 
-const getPostById = (id) => BlogPost.findOne({
-  where: { id },
-  include: [
-    { model: User, as: 'user', attributes: { exclude: ['password'] } },
-    { model: Category, as: 'categories', through: { attributes: [] } },
-  ],
-});
+const getPostById = async (id) => {
+  const post = await BlogPost.findOne({
+    where: { id },
+    include: [
+      { model: User, as: 'user', attributes: { exclude: ['password'] } },
+      { model: Category, as: 'categories', through: { attributes: [] } },
+    ],
+  });
+  if (!post) {
+    return { status: 404, data: { message: 'Post does not exist' } };
+  }
+  return { status: 200, data: post };
+};
 
-const updatePost = (id, title, content) => BlogPost.update({ title, content }, { where: { id } });
+const updatePost = async (id, title, content, userId) => {
+  const { data } = await getPostById(id);
+  if (userId !== data.user.id) {
+    return { status: 401, data: { message: 'Unauthorized user' } };
+  }
+  await BlogPost.update({ title, content }, { where: { id } });
+  const newPost = await getPostById(id);
+  return { status: 200, data: newPost.data };
+};
 
-const deletePost = (id) => BlogPost.destroy({ where: { id } });
+const deletePost = async (id, userId) => {
+  const { data } = await getPostById(id);
+
+  if (data.message) {
+    return { status: 404, data: { message: 'Post does not exist' } };
+  }
+  if (userId !== data.user.id) {
+    return { status: 401, data: { message: 'Unauthorized user' } };
+  }
+  await BlogPost.destroy({ where: { id } });
+  return { status: 204 };
+};
 
 const searchPosts = (query) => BlogPost.findAll({ where: {
   [Op.or]: [
