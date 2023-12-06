@@ -24,12 +24,15 @@ const addPost = async (title, content, categoryIds, userId) => {
   return { status: 201, data: result };
 };
 
-const getPosts = () => BlogPost.findAll({
-  include: [
-    { model: User, as: 'user', attributes: { exclude: ['password'] } },
-    { model: Category, as: 'categories', through: { attributes: [] } },
-  ],
-});
+const getPosts = async () => {
+  const posts = await BlogPost.findAll({
+    include: [
+      { model: User, as: 'user', attributes: { exclude: ['password'] } },
+      { model: Category, as: 'categories', through: { attributes: [] } },
+    ],
+  });
+  return { status: 200, data: posts };
+};
 
 const getPostById = async (id) => {
   const post = await BlogPost.findOne({
@@ -68,16 +71,25 @@ const deletePost = async (id, userId) => {
   return { status: 204 };
 };
 
-const searchPosts = (query) => BlogPost.findAll({ where: {
-  [Op.or]: [
-    { title: { [Op.like]: `%${query}%` } },
-    { content: { [Op.like]: `%${query}%` } },
+const searchPosts = async (query) => {
+  if (!query) {
+    const { status, data } = await getPosts();
+    return { status, data };
+  }
+
+  const posts = await BlogPost.findAll({ where: {
+    [Op.or]: [
+      { title: { [Op.like]: `%${query}%` } },
+      { content: { [Op.like]: `%${query}%` } },
+    ],
+  },
+  include: [
+    { model: User, as: 'user', attributes: { exclude: ['password'] } },
+    { model: Category, as: 'categories', through: { attributes: [] } },
   ],
-},
-include: [
-  { model: User, as: 'user', attributes: { exclude: ['password'] } },
-  { model: Category, as: 'categories', through: { attributes: [] } },
-],
-});
+  });
+
+  return { status: 200, data: posts };
+};
 
 module.exports = { addPost, getPosts, getPostById, updatePost, deletePost, searchPosts };

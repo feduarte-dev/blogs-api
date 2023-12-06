@@ -1,10 +1,10 @@
 const { postService } = require('../services');
 const getUserFromToken = require('../utils/getUserFromToken');
 
-const getPosts = async (req, res) => {
+const getPosts = async (_req, res) => {
   try {
-    const posts = await postService.getPosts();
-    return res.status(200).json(posts);
+    const { status, data } = await postService.getPosts();
+    return res.status(status).json(data);
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
