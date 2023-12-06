@@ -20,13 +20,14 @@ app.use('/post', postRoute);
 // para que possa ser utilizada pelo arquivo `src/server.js`
 module.exports = app;
 
-// quando usar a variavel do require entre {} e quando usar puro? sei que qdo é feito module.exports dentro de um objeto o require é entre {} mas e os outros casos?
-// não entendo o models.index.js
-// pq na criacao da model, ao colocar os parametros sequelize e datatypes, o vscode importa desnecessariamente eles?
-// fiz uma validacao puxando a service, devo trocar o lugar da validacao pra nao puxa-la?
-// o map de post service é valido?
+// 1- Quando usar a variável do require entre {} e quando usar puro? sei que quando é feito module.exports dentro de um objeto o require é entre {} mas e os outros casos?
+// 2- Não entendo o models.index.js
+// 3- Por que na criação da model, ao colocar os parâmetros sequelize e datatypes, o vscode os importa desnecessariamente?
+// Fiz uma validação puxando a service, isso não está dentro de boas práticas?
+// O map de post service é válido?
 // fiz validacoes no controller, ta errado/
-// nao entendi a aplicabilidade de: const teste = (categories) => Category.findAndCountAll({
+// Nãoo entendi a aplicabilidade de:
+// const teste = (categories) => Category.findAndCountAll({
 //   where: { id: categories },
 //   offset: 0,
 //   limit: 10,
