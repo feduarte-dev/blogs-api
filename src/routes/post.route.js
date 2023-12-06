@@ -1,14 +1,14 @@
 const route = require('express').Router();
+const { postReadController, postTransformController } = require('../controllers');
 const validatePost = require('../middlewares/validatePost');
 const validateToken = require('../middlewares/validateToken');
 const validateUpdate = require('../middlewares/validateUpdates');
-const { postController, post2Controller, post3Controller } = require('../controllers');
 
-route.get('/search', validateToken, post3Controller.searchPosts);
-route.delete('/:id', validateToken, post2Controller.deletePost);
-route.put('/:id', validateToken, validateUpdate, postController.updatePost);
-route.get('/:id', validateToken, post2Controller.getPostById);
-route.post('/', validateToken, validatePost, postController.addPost);
-route.get('/', validateToken, post2Controller.getPosts);
+route.get('/search', validateToken, postReadController.searchPosts);
+route.delete('/:id', validateToken, postTransformController.deletePost);
+route.put('/:id', validateToken, validateUpdate, postTransformController.updatePost);
+route.get('/:id', validateToken, postReadController.getPostById);
+route.post('/', validateToken, validatePost, postTransformController.addPost);
+route.get('/', validateToken, postReadController.getPosts);
 
 module.exports = route;

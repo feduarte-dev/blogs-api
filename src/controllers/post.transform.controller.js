@@ -1,4 +1,4 @@
-const { postService } = require('../services');
+const { postTransformService } = require('../services');
 const getUserFromToken = require('../utils/getUserFromToken');
 
 const addPost = async (req, res) => {
@@ -6,7 +6,8 @@ const addPost = async (req, res) => {
     const { authorization } = req.headers;
     const { title, content, categoryIds } = req.body;
     const { userId } = await getUserFromToken(authorization);
-    const { status, data } = await postService.addPost(title, content, categoryIds, userId);
+    const { status, data } = await postTransformService
+      .addPost(title, content, categoryIds, userId);
     return res.status(status).json(data);
   } catch (error) {
     return res.status(500).json({ message: error.message });
@@ -19,7 +20,19 @@ const updatePost = async (req, res) => {
     const { authorization } = req.headers;
     const { title, content } = req.body;
     const { userId } = await getUserFromToken(authorization);
-    const { status, data } = await postService.updatePost(id, title, content, userId);
+    const { status, data } = await postTransformService.updatePost(id, title, content, userId);
+    return res.status(status).json(data);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+const deletePost = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { authorization } = req.headers;
+    const { userId } = await getUserFromToken(authorization);
+    const { status, data } = await postTransformService.deletePost(id, userId);
     return res.status(status).json(data);
   } catch (error) {
     return res.status(500).json({ message: error.message });
@@ -29,4 +42,5 @@ const updatePost = async (req, res) => {
 module.exports = {
   addPost,
   updatePost,
+  deletePost,
 };
