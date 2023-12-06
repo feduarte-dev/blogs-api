@@ -1,8 +1,5 @@
-const jwt = require('jsonwebtoken');
 const { userService } = require('../services');
 const getUserFromToken = require('../utils/getUserFromToken');
-
-const secret = process.env.JWT_SECRET;
 
 const getUsers = async (_req, res) => {
   try {
@@ -26,10 +23,8 @@ const getUserById = async (req, res) => {
 const createUser = async (req, res) => {
   try {
     const { displayName, email, password, image } = req.body;
-    const { status } = await userService.createUser(displayName, email, password, image);
-    const jwtConfig = { expiresIn: '7d', algorithm: 'HS256' };
-    const token = jwt.sign({ data: { email } }, secret, jwtConfig);
-    return res.status(status).json({ token });
+    const { status, data } = await userService.createUser(displayName, email, password, image);
+    return res.status(status).json(data);
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
