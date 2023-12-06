@@ -9,8 +9,8 @@ module.exports = {
       },
       category_id: {
         type: Sequelize.INTEGER
-      }
-    })
+      },
+    });
   },
 
   async down(queryInterface, Sequelize) {
