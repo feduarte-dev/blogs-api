@@ -4,56 +4,49 @@ const getUserFromToken = require('../utils/getUserFromToken');
 
 const secret = process.env.JWT_SECRET;
 
-const createUser = async (req, res) => {
+const getUsers = async (_req, res) => {
   try {
-    const { displayName, email, password, image } = req.body;
-    await userService.createUser(displayName, email, password, image);
-    const jwtConfig = {
-      expiresIn: '7d',
-      algorithm: 'HS256',
-    };
-    const token = jwt.sign({ data: { email } }, secret, jwtConfig);
-    return res.status(201).json({ token });
+    const { status, data } = await userService.getUsers();
+    return res.status(status).json(data);
   } catch (error) {
-    console.log(error);
-    return res.status(500).json({ message: 'Internal Error' });
-  }
-};
-
-const getUsers = async (req, res) => {
-  try {
-    const users = await userService.getUsers();
-    return res.status(200).json(users);
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json({ message: 'Internal Error' });
+    return res.status(500).json({ message: error.message });
   }
 };
 
 const getUserById = async (req, res) => {
   try {
     const { id } = req.params;
-    const user = await userService.getUserById(id);
-    if (!user) {
-      return res.status(404).json({ message: 'User does not exist' });
-    }
-    return res.status(200).json(user);
+    const { status, data } = await userService.getUserById(id);
+    return res.status(status).json(data);
   } catch (error) {
-    console.log(error);
-    return res.status(500).json({ message: 'Internal Error' });
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+const createUser = async (req, res) => {
+  try {
+    const { displayName, email, password, image } = req.body;
+    const { status } = await userService.createUser(displayName, email, password, image);
+    const jwtConfig = {
+      expiresIn: '7d',
+      algorithm: 'HS256',
+    };
+    const token = jwt.sign({ data: { email } }, secret, jwtConfig);
+    return res.status(status).json({ token });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
   }
 };
 
 const deleteUser = async (req, res) => {
   try {
     const { authorization } = req.headers;
-    const id = await getUserFromToken(authorization);
-    await userService.deleteUser(id);
-    return res.status(204).end();
+    const { userId } = await getUserFromToken(authorization);
+    const { status } = await userService.deleteUser(userId);
+    return res.status(status).end();
   } catch (error) {
-    console.log(error);
-    return res.status(500).json({ message: 'Internal Error' });
+    return res.status(500).json({ message: error.message });
   }
 };
 
-module.exports = { createUser, getUsers, getUserById, deleteUser };
+module.exports = { getUsers, getUserById, createUser, deleteUser };

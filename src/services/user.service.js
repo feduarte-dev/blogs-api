@@ -1,17 +1,31 @@
 const { User } = require('../models');
 
-const createUser = (displayName, email, password, image) => User
-  .create({ displayName, email, password, image });
+const getUsers = async () => {
+  const users = await User.findAll({ attributes: { exclude: 'password' } });
+  return { status: 200, data: users };
+};
 
-const getUsers = () => User.findAll({ attributes: { exclude: 'password' } });
+const getUserById = async (id) => {
+  const user = await User.findOne({ where: { id }, attributes: { exclude: 'password' } });
+  if (!user) {
+    return { status: 404, data: { message: 'User does not exist' } };
+  }
+  return { status: 200, data: user };
+};
 
-const getUserById = (id) => User.findOne({ where: { id }, attributes: { exclude: 'password' } });
+const createUser = async (displayName, email, password, image) => {
+  await User.create({ displayName, email, password, image });
+  return { status: 201 };
+};
 
-const deleteUser = (id) => User.destroy({ where: { id } });
+const deleteUser = async (id) => {
+  await User.destroy({ where: { id } });
+  return { status: 204 };
+};
 
 module.exports = {
-  createUser,
   getUsers,
   getUserById,
+  createUser,
   deleteUser,
 };
