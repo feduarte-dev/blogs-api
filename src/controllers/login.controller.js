@@ -1,22 +1,20 @@
 const jwt = require('jsonwebtoken');
-const { loginService } = require('../services');
+const { userService } = require('../services');
 
 const secret = process.env.JWT_SECRET;
 
-module.exports = async (req, res) => {
+const login = async (req, res) => {
   try {
     const { email } = req.body;
-
-    const jwtConfig = {
-      expiresIn: '7d',
-      algorithm: 'HS256',
-    };
-
-    const user = await loginService.getByEmail(email);
-    const token = jwt.sign({ data: { email, userId: user.dataValues.id } }, secret, jwtConfig);
-    return res.status(200).json({ token });
+    const { status, data } = await userService.getUserByEmail(email);
+    const jwtConfig = { expiresIn: '7d', algorithm: 'HS256' };
+    const token = jwt.sign({ data: { email, userId: data.dataValues.id } }, secret, jwtConfig);
+    return res.status(status).json({ token });
   } catch (error) {
-    console.log(error);
-    return res.status(500).json({ message: 'Internal Error' });
+    return res.status(500).json({ message: error.message });
   }
+};
+
+module.exports = {
+  login,
 };

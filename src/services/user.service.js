@@ -13,6 +13,11 @@ const getUserById = async (id) => {
   return { status: 200, data: user };
 };
 
+const getUserByEmail = async (email) => {
+  const user = await User.findOne({ where: { email } });
+  return { status: 200, data: user };
+};
+
 const createUser = async (displayName, email, password, image) => {
   await User.create({ displayName, email, password, image });
   return { status: 201 };
@@ -26,6 +31,7 @@ const deleteUser = async (id) => {
 module.exports = {
   getUsers,
   getUserById,
+  getUserByEmail,
   createUser,
   deleteUser,
 };

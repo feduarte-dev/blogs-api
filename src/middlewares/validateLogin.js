@@ -1,4 +1,4 @@
-const { loginService } = require('../services');
+const { userService } = require('../services');
 
 const validateLogin = async (req, res, next) => {
   const { email, password } = req.body;
@@ -7,8 +7,8 @@ const validateLogin = async (req, res, next) => {
     return res.status(400).json({ message: 'Some required fields are missing' });
   }
 
-  const user = await loginService.getByEmail(email);
-  if (!user || user.password !== password) {
+  const { data } = await userService.getUserByEmail(email);
+  if (!data || data.password !== password) {
     return res.status(400).json({ message: 'Invalid fields' });
   }
 

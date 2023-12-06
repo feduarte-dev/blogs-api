@@ -1,4 +1,4 @@
-const { loginService } = require('../services');
+const { userService } = require('../services');
 
 const validateDisplayName = (displayName) => (!displayName || displayName.length < 8);
 const validatePassword = (password) => (!password || password.length < 6);
@@ -21,8 +21,8 @@ const validateUser = async (req, res, next) => {
     return res.status(400).json({ message: '"email" must be a valid email' });
   }
 
-  const user = await loginService.getByEmail(email);
-  if (user) {
+  const { data } = await userService.getUserByEmail(email);
+  if (data) {
     return res.status(409).json({ message: 'User already registered' });
   }
   
