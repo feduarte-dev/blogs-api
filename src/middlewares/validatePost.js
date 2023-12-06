@@ -6,9 +6,9 @@ const validatePost = async (req, res, next) => {
     return res.status(400).json({ message: 'Some required fields are missing' });
   }
 
-  const allCategories = await categoryService.getCategories();
+  const { data } = await categoryService.getCategories();
 
-  const isValidCategory = categoryIds.every((categoryId) => allCategories
+  const isValidCategory = categoryIds.every((categoryId) => data
     .some((category) => category.id === categoryId));
 
   if (!isValidCategory) {

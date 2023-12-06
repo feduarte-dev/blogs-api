@@ -1,27 +1,25 @@
 const { categoryService } = require('../services');
 
-const addCategory = async (req, res) => {
+const getCategories = async (_req, res) => {
   try {
-    const { name } = req.body;
-    const newCategory = await categoryService.addCategory(name);
-    return res.status(201).json(newCategory);
+    const { status, data } = await categoryService.getCategories();
+    return res.status(status).json(data);
   } catch (error) {
-    console.log(error);
-    return res.status(500).json({ message: 'Internal Error' });
+    return res.status(500).json({ message: error.message });
   }
 };
 
-const getCategories = async (req, res) => {
+const addCategory = async (req, res) => {
   try {
-    const categories = await categoryService.getCategories();
-    return res.status(200).json(categories);
+    const { name } = req.body;
+    const { status, data } = await categoryService.addCategory(name);
+    return res.status(status).json(data);
   } catch (error) {
-    console.log(error);
-    return res.status(500).json({ message: 'Internal Error' });
+    return res.status(500).json({ message: error.message });
   }
 };
 
 module.exports = {
-  addCategory,
   getCategories,
+  addCategory,
 };
