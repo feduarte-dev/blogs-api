@@ -11,15 +11,12 @@ const validateToken = (req, res, next) => {
     
   try {
     const token = bearerToken.split(' ')[1];
-    const payload = jwt.verify(token, secret);
-
-    req.user = payload;
+    jwt.verify(token, secret);
   } catch (error) {
     if (error.name === 'JsonWebTokenError') {
       return res.status(401).json({ message: 'Expired or invalid token' });
     } 
-    console.log(error);
-    return res.status(500).json({ message: 'Internal Error' });
+    return res.status(500).json({ message: error.message });
   }
 
   next();

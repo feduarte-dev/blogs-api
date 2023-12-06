@@ -20,9 +20,13 @@ const getPostById = async (req, res) => {
 };
 
 const searchPosts = async (req, res) => {
-  const { q } = req.query;
-  const { status, data } = await postReadService.searchPosts(q);
-  return res.status(status).json(data);
+  try {
+    const { q } = req.query;
+    const { status, data } = await postReadService.searchPosts(q);
+    return res.status(status).json(data);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
 };
 
 module.exports = {

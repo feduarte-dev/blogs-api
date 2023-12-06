@@ -1,4 +1,5 @@
 const route = require('express').Router();
+
 const { postReadController, postTransformController } = require('../controllers');
 const validatePost = require('../middlewares/validatePost');
 const validateToken = require('../middlewares/validateToken');
