@@ -47,7 +47,6 @@ This project is a blog API where you can create an account, log in, write, and r
 4. Install dependencies inside container:
 
    ```bash
-   cd backend
    npm install
    ```
 
